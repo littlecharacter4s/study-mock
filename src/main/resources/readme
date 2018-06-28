@@ -1,0 +1,38 @@
+PowerMock有三个重要的注解：
+    @RunWith(PowerMockRunner.class)
+    @PrepareForTest({要测试的主类(实现类，不是接口).class, 包含静态方法的类.class})
+    示例：@PrepareForTest({AccountServiceImpl.class, UniqueIDProvider.class})
+    @PowerMockIgnore({"包.单个加载异常的类", "包.多个加载异常的类*"})，消除类加载器引入的异常。除非有类加载异常，不用加！
+    示例：@PowerMockIgnore({"javax.management.*", "com.greenpineyu.fel.*"})
+Mock普通方法
+    PowerMockito.doReturn(returnValue).when(mockTarget).methodName(params);
+Mock私有方法
+    PowerMockito.doReturn(returnValue).when(mockTarget, methodName, params);
+Mock静态方法
+    PowerMockito.mockStatic(TargetClass.class);
+    PowerMockito.when(TargetClass.methodName(params)).thenReturn(returnValue);
+Mock构造方法
+    PowerMockito.whenNew(TargetClass).withNoArguments().thenReturn(mockTarget);
+    PowerMockito.whenNew(TargetClass).withArguments(params).thenReturn(mockTarget);
+    PowerMockito.doReturn(returnValue).when(mockTarget).methodName(params);
+调用私有方法
+    public <T> T invokePrivateMethod(Object target, String methodName, Object... args) {
+        try {
+            Method method = WhiteboxImpl.findMethodOrThrowException(target, null, methodName, args);
+            method.setAccessible(true);
+            return (T) method.invoke(target, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("方法执行错误!");
+    }
+    T t = invokePrivateMethod(mockTarget, methodName, params);
+注：获取mockTarget的方式
+    // 第一种方式（测试主类）
+    @InjectMocks
+    private TargetClass mockTarget = spy(new TargetClass());
+    // 第二种方式（主类属性）
+    @Mock
+    private TargetClass mockTarget;
+    // 第三种方式（主类引用）
+    TargetClass mockTarget = Mockito.mock(TargetClass.class);
