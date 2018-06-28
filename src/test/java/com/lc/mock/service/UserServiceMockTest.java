@@ -27,12 +27,13 @@ public class UserServiceMockTest extends BaseMockTest {
 
     @Test
     public void testSaveUser() throws Exception {
+        // Mock私有方法
         doReturn(new User()).when(userService, "assembleUser", Mockito.anyString(), Mockito.anyString());
-
+        // Mock普通方法
         doReturn(true).when(userDao).saveUser(Mockito.any(User.class));
         boolean result1 = userService.saveUser(Mockito.anyString(), Mockito.anyString());
         Assert.assertTrue("测试结果", result1);
-
+        // Mock构造方法
         RetryUtil retryUtil = Mockito.mock(RetryUtil.class);
         whenNew(RetryUtil.class).withNoArguments().thenReturn(retryUtil);
         doThrow(new RuntimeException()).when(retryUtil).retryWithResult(Mockito.any(RetryUtil.RetryCode.class));
@@ -42,6 +43,7 @@ public class UserServiceMockTest extends BaseMockTest {
 
     @Test
     public void testGetUser() throws Exception {
+        // Mock普通方法(final方法)
         doReturn(new User()).when(userDao).getUser(Mockito.anyLong());
         User user = userService.getUser(Mockito.anyLong());
         Assert.assertTrue("测试结果", user != null);
@@ -53,10 +55,10 @@ public class UserServiceMockTest extends BaseMockTest {
         mockStatic(KeyUtil.class);
         when(KeyUtil.getInstance()).thenReturn(keyUtil);
         doReturn(1L).when(keyUtil).getKey();
-
+        // Mock静态方法
         mockStatic(DateUtil.class);
         when(DateUtil.convertToDate(Mockito.anyString(), Mockito.anyString())).thenReturn(new Date());
-
+        // 调用私有方法
         User user = invokePrivateMethod(userService, "assembleUser", Mockito.anyString(), Mockito.anyString());
         Assert.assertTrue("测试结果", user != null);
     }

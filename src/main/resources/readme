@@ -27,7 +27,8 @@ Mock构造方法
         throw new RuntimeException("方法执行错误!");
     }
     T t = invokePrivateMethod(mockTarget, methodName, params);
-注：获取mockTarget的方式
+注：
+获取mockTarget的方式
     // 第一种方式（测试主类）
     @InjectMocks
     private TargetClass mockTarget = spy(new TargetClass());
@@ -36,3 +37,7 @@ Mock构造方法
     private TargetClass mockTarget;
     // 第三种方式（主类引用）
     TargetClass mockTarget = Mockito.mock(TargetClass.class);
+重用的mockReturn类型
+    doReturn
+    doNothing
+    doThrow
