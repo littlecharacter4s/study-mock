@@ -28,8 +28,10 @@ public class UserServiceMockTest extends BaseMockTest {
     @Test
     public void testSaveUser() throws Exception {
         // Mock私有方法
+        doThrow(new RuntimeException()).when(userService, "assembleUser", Mockito.anyString(), Mockito.anyString());
         doReturn(new User()).when(userService, "assembleUser", Mockito.anyString(), Mockito.anyString());
         // Mock普通方法
+        doThrow(new RuntimeException()).when(userDao).saveUser(Mockito.any(User.class));
         doReturn(true).when(userDao).saveUser(Mockito.any(User.class));
         boolean result1 = userService.saveUser(Mockito.anyString(), Mockito.anyString());
         Assert.assertTrue("测试结果", result1);
