@@ -7,7 +7,9 @@ import com.lc.mock.service.impl.UserServiceImpl;
 import com.lc.mock.util.DateUtil;
 import com.lc.mock.util.KeyUtil;
 import com.lc.mock.util.RetryUtil;
+import com.lc.mock.util.SpringUtil;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,6 +26,15 @@ public class UserServiceMockTest extends BaseMockTest {
     private UserService userService = spy(new UserServiceImpl());
     @Mock
     private UserDao userDao;
+
+    OrderService orderService;
+
+    @Before
+    public void init() {
+        // 这里可以初始化spring容器 -> 实际数据和mock数据混合编程，省的new一些数据，而是从数据库查
+        orderService = SpringUtil.getBean(OrderService.class);
+        // 下面就可以直接用orderService了
+    }
 
     @Test
     public void testSaveUser() throws Exception {
